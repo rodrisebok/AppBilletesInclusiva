@@ -4,3 +4,4 @@ tensorflow
 numpy
 Pillow
 python-dotenv
+opencv-python

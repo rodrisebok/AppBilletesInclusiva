@@ -1,31 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { ViewType } from './types/camera';
-import { useCamera } from './hooks/useCamera';
 import MainScreen from './components/screens/MainScreen';
 import CameraScreen from './components/screens/CameraScreen';
+import { useState } from 'react';
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<ViewType>('main');
-  const { requestCameraAccess, stopCamera } = useCamera();
 
-  const handleCameraOpen = async () => {
-    const permission = await requestCameraAccess();
-    if (permission.granted) {
-      setCurrentView('camera');
-    }
+  const handleCameraOpen = () => {
+    // No se pide acceso a la cámara acá. CameraScreen es dueño exclusivo
+    // del ciclo de vida del stream (getUserMedia / stop). Pedir el
+    // permiso acá también duplicaba la apertura del dispositivo y
+    // colgaba la inicialización en CameraScreen.
+    setCurrentView('camera');
   };
 
   const handleCameraClose = () => {
-    stopCamera();
     setCurrentView('main');
   };
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      stopCamera();
-    };
-  }, [stopCamera]);
 
   return (
     <>
